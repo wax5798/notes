@@ -1,0 +1,107 @@
+
+* 安装与配置
+
+
+* 默认快捷键
+  首先把vim-orgmode的快捷键贴出来吧
+  #+BEGIN_SRC sh
+    Show/Hide:~
+      <TAB>           - Cycle Visibility
+
+    Editing Structure:~
+      <C-S-CR>        - insert heading above
+      <S-CR>          - insert heading below
+      <CR>            - insert heading below
+      <C-CR>          - insert heading above, after children
+
+      m}              - move heading down 
+      m{              - move heading up
+      m]]             - move subtree down 
+      m[[             - move subtree up
+
+      yah             - yank heading
+      dah             - delete heading
+      yar             - yank subtree
+      dar             - delete subtree
+      p               - paste subtree                                                                   
+
+      >> or >ah       - demote heading
+      << or <ah       - promote heading
+      >ar             - demote subtree
+      <ar             - promote subtree
+
+    Hyperlinks:~
+      gl              - goto link 
+      gyl             - yank link 
+      gil             - insert new link 
+
+      gn              - next link 
+      go              - previous link 
+
+    TODO Lists:~
+      <localleader>d  - select keyword
+      <S-Left>        - previous keyword
+      <S-Right>       - next keyword
+      <C-S-Left>      - previous keyword set
+      <C-S-Right>     - next keyword set
+
+    Checkboxes:~
+      <localleader>cc             - toggle status
+      <localleader>cn or <CR>     - insert checkbox below
+      <localleader>cN or <C-S-CR> - insert checkbox above
+
+    TAGS and properties:~
+      <localleader>st     - set tags
+
+    Dates:~
+      <localleader>sa     - insert date
+      <localleader>si     - insert inactive date
+      <localleader>pa     - insert date by using calendar selection
+      <localleader>pi     - insert inactive date by using calendar selection
+
+    Agenda:~
+      <localleader>caa    - agenda for the week
+      <localleader>cat    - agenda of all TODOs
+
+      Not yet implemented in vim-orgmode~
+      <localleader>caT    - timeline for current buffer
+
+    Export:~
+      <localleader>ep     - export as PDF
+      <localleader>eh     - export as HTML
+      <localleader>el     - export as LaTeX
+  #+END_SRC
+
+
+* TODO 文件导出
+  为什么导出文件的命令不能用？以下操作都是在vim下编辑，再从emacs中导出
+** 导出到html并用浏览器打开
+   命令: C-c C-e b
+
+** TODO 导出到pdf
+   导出失败？
+      
+
+* 格式
+** 链接
+   链接的一般格式为
+   #+BEGIN_SRC sh
+   [[link][description]]
+   #+END_SRC
+   其中link指链接的目标，可以是一个网址http://www.baidu.com(注意一定要有http://),也可以是一个文件，如./images/xxx.png(也可以写为file:./images/xxx.png)
+   description是这个链接的描述
+   比如我们给出下面三种链接的方式
+   #+BEGIN_SRC sh
+   1 [[www.baidu.com][百度]]
+   2 [[file:./images/test.png][picture]]                  # 翻译成html为<a href=link>description</a> 
+   3 [[http://www.baidu.com][file:./images/test.png]]   # 在github上被翻译成html为<a href=link><img src=description></a>，在emacs中不能转换成html
+   #+END_SRC
+   实际效果如下
+
+   1. [[http://www.baidu.com][百度]]
+   2. [[file:./images/test.png][picture]]
+   3. [[http://www.baidu.com][file:./images/test.png]]   
+
+
+** TODO 问题
+  为什么使用- + 标记行首之后，回车会再次缩进？有什么意义吗？能不能取消

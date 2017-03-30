@@ -1,0 +1,13 @@
+* 计划
+** 自动补全
+    怎么从tag和buffer不全，而不用clang
+** 插件org-mode
+** 外观，如air-line
+** 插件版本管理 
+    - 记录下当前插件所用的github版本号
+** vim 输入的优化方案
+** 参考evil插件 是否还需要其他好的插件
+** vim 操作，如 search表达式， 
+    Mark
+    search 表达式
+** vim 脚本

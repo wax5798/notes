@@ -1,0 +1,67 @@
+* vim-airline 安装与配置
+** 安装 airline
+   #+BEGIN_SRC sh
+   Plugin 'vim-airline/vim-airline'
+   #+END_SRC
+
+   打开vim 执行命令:PluginInstall 等待安装完成
+
+   重启vim 状态栏的效果: 
+
+   [[file:./images/airline-0-0.png][file:./images/airline-0-0.png]]
+
+   接下来，我们需要对显示效果做一些修改，使分隔符从"|"改成漂亮的三角
+
+   这个功能就需要额外安装字体
+
+
+** 安装字体
+   #+BEGIN_SRC sh 4
+   $ cd ~ && git clone https://github.com/powerline/fonts.git 
+   $ cd fonts && ./install.sh
+   $ cd ~ && rm fonts -rf
+   #+END_SRC
+   我的字体安装完之后放在了这个目录: ~/.local/share/fonts
+
+   安装完字体之后还需要在.vimrc 中做一些额外配置:
+
+   #+BEGIN_SRC sh 
+   let g:airline_powerline_fonts = 1
+   if !exists('g:airline_symbols')
+       let g:airline_symbols = {}
+   endif   
+
+   let g:airline_left_sep = '⮀' " 这部分设置参考自vim-airline/doc/airline.txt
+   let g:airline_left_alt_sep = '⮁'                          
+   let g:airline_right_sep = '⮂'                           
+   let g:airline_right_alt_sep = '⮃'
+   let g:airline_symbols.branch = '⭠'
+   let g:airline_symbols.readonly = '⭤'
+   let g:airline_symbols.linenr = '⭡' 
+   #+END_SRC
+   完成之后的效果:
+
+   [[file:./images/airline-0-1.png][file:./images/airline-0-1.png]]
+
+
+** 配置主题
+   #+BEGIN_SRC sh
+   Plugin 'vim-airline/vim-airline-themes'
+   let g:airline_theme='molokai'
+   #+END_SRC
+   还可以查看[[http://github.com/vim-airline/vim-airline/wiki/Screenshots][更多主题]]
+
+
+** tab line
+   相当于minibuffer, 配置如下
+   #+BEGIN_SRC sh
+   let g:airline#extensions#tabline#enabled = 1
+   let g:airline#extensions#tabline#buffer_nr_show = 1
+   #+END_SRC
+
+
+** 完整的配置
+   下面贴出完整配置
+
+   [[./images/airline-0-2.png][./images/airline-0-2.png]]
+   
