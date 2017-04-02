@@ -23,7 +23,7 @@
       dah             - delete heading
       yar             - yank subtree
       dar             - delete subtree
-      p               - paste subtree                                                                   
+      p               - paste subtree
 
       >> or >ah       - demote heading
       << or <ah       - promote heading
