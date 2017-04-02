@@ -13,8 +13,7 @@
    #+BEGIN_SRC 
    keycode  54 = c C c C
    #+END_SRC
-   等号左边是按键产生的keycode，右边是keycode对应的处理方法。最多能有8中处理方法。以keycode
-   54为例，单独按下按键，处理方法为输入小写的c(第一种方法)，按下shift同时按下c，处理方法为输入大写的C(第二种方法)。至于其他方法基本没有接触，无需关注。
+   等号左边是按键产生的keycode，右边是keycode对应的处理方法。最多能有8种处理方法。以keycode 54为例，单独按下按键，处理方法为输入小写的c(第一种方法)，按下shift同时按下c，处理方法为输入大写的C(第二种方法)。至于其他方法基本没有接触，无需关注。
    如果我们需要修改keycode与行为之间的映射关系可以执行如下命令
    #+BEGIN_SRC sh
    xmodmap -e "keycode 38 = c C c C"
@@ -22,7 +21,7 @@
    即按键a能产生按键c的效果
 ** 修饰键行为
    修饰键即为alt， ctrl等按键。
-   我们先使用命令xmodmap来查看修饰方法
+   我们先使用命令 =xmodmap= 来查看修饰方法
    #+BEGIN_SRC 
    $ xmodmap 
    xmodmap:  up to 4 keys per modifier, (keycodes in parentheses):
@@ -36,7 +35,7 @@
    mod4        Super_L (0x85),  Super_R (0x86),  Super_L (0xce),  Hyper_L (0xcf)
    mod5        ISO_Level3_Shift (0x5c),  Mode_switch (0xcb)
    #+END_SRC
-   以lock为例，keycode 0x42对应着Caps_Lock行为，Caps_Lock行为绑定在lock方法上 
+   以lock为例，keycode 0x42对应着Caps_Lock行为，Caps_Lock行为绑定在lock方法上，lock方法被触发则会切换大小写 
    
    那么我们怎样才能修改修饰行为呢？下面以右ctrl替换caps为例
    #+BEGIN_SRC sh
@@ -47,7 +46,7 @@
    # 把Caps_Lock绑定到lock
    xmodmap -e "add Lock = Caps_Lock"
    #+END_SRC
-   我们查看现在的修饰方法
+   更改之后的结果
    #+BEGIN_SRC
    $ xmodmap 
    xmodmap:  up to 4 keys per modifier, (keycodes in parentheses):
@@ -68,6 +67,7 @@
   - Caps功能移至右ctrl按键
   - Esc功能移至Caps按键
   - `~功能移至Esc按键
+** 使用shell脚本
     以下是我的配置脚本
     #+BEGIN_SRC sh
     #!/bin/bash
@@ -96,7 +96,8 @@
     fi
     #+END_SRC
 
-    另外还可以把配置写在~/.xmodmaprc中
+** TODO 使用配置文件
+   理论上，把配置信息写在~/.Xmodmap中，启动的时候会被自动加载。
     #+BEGIN_SRC 
     remove Control = Control_R
     remove Lock = Caps_Lock
@@ -105,8 +106,8 @@
     keycode 9 = grave asciitilde grave asciitilde
     add Lock = Caps_Lock
     #+END_SRC
+   但貌似启动的时候会xmodmap配置会被重置，为了解决这个问题，我在~/.profile中添加了如下命令 =sleep 10 && xmodmap ~/.Xmodmap &= 
 
-    如果配置文件不能生效，可以参考这篇文章，/可能/有帮助: [[http://blog.chinaunix.net/uid-13189580-id-3048310.html][Ubuntu自定义键位xmodmap ]]
+   如果配置文件不能生效，可以参考这篇文章，/可能/有帮助: [[http://blog.chinaunix.net/uid-13189580-id-3048310.html][Ubuntu自定义键位xmodmap ]]
 
-** TODO 为什么会被重置？
-   好了，理论是这样的，并且运行以上脚本，按键确实会被暂时改变。但过一段时间，配置又被重置了。。。不明所以
+   PS: 我在使用ibus的时候，每次切换输入法，xmodmap的配置都会被重置，所以改用了fcitx
