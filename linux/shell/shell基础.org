@@ -1,0 +1,167 @@
+今天写一个shell脚本，发现居然连脚本怎么带参数都忘了。蹭着空闲，简单整理一下shell的基本用法
+* 写在前面
+  发现一些比较杂乱且不太好归类的知识点，就先在前面列一下吧
+  - 命令的执行是从上而下、从左而右地分析与执行
+  - 如果读取到一个Enter符号，就尝试开始执行该行（或该串）命令
+  - 至于如果一行的内容如果太多，则可以使用“\[Enter]”来扩展至下一行
+  - "#"可作为批注
+  - 可以通过$?来查看一个命令执行成功与否
+  - script内较特殊的命令，使用“绝对路径”来执行
+  - 数值运算$((计算式))，如 =# echo $((13 % 3))= 
+  - 使用source（或小数点"."）来执行脚本，如 =source ~/.bashrc= ,.bashrc会在父进程中执行，各项操作都会在原本的bash内生效
+
+
+* shell script 的默认变量
+  - $数字: 代表第 =数字= 个变量
+  - $#: 代表后接的参数个数（不包括 $0）
+  - $@: 代表"$1"、"$2"、"$3"之意，每个变量是独立的（用双引号扩起来）
+  - $*: 代表“"$1c$2c$3"”，其中c为分隔字符，默认为空格键。
+
+  示例代码如下
+    #+BEGIN_SRC sh
+    #!/bin/bash
+
+    echo '$0:' $0
+    echo '$1:' $1
+    echo '$2:' $2
+    echo '$#:' $#
+    echo '$@:' $@
+    echo '$*:' $*
+
+    echo print '$@'
+    for arg in "$@"
+    do 
+        echo -e "\t" $arg
+    done
+
+    echo print '$*'                                                                                                                                                                                              
+    for arg in "$*"
+    do 
+        echo -e '\t' $arg
+    done
+    #+END_SRC
+    /??脚本中单引号和双引号有什么区别/
+    运行结果如下
+    #+BEGIN_SRC sh
+    # ./test.sh sldfk sdfklj
+    $0: ./test.sh
+    $1: sldfk
+    $2: sdfklj
+    $#: 2
+    $@: sldfk sdfklj
+    $*: sldfk sdfklj
+    print $@
+       sldfk
+       sdfklj
+    print $*
+       sldfk sdfklj
+    #+END_SRC
+
+* 条件判断式
+** test 命令
+   简单实例 =test -e ~/.vimrc && echo "exist" || echo "Not exist"=
+   
+   常用判断标志：
+   - -e 判断文件名是否存在
+   - 判断文件类型: -f(file), -d(directory), -b(block device), -c(character device), -S(socket), -p(pipe), -L(link)
+   - 权限检测: -r(可读), -w(可写), -x(可执行), -u(SUID), -g(GUID), -k(Sticky bit), -s(非空白文件)
+   - 比较两文件: -nt(newer than), -ot(older than), -ef(指向同一个inode)
+   - 比较整数: -eq, -ne, -gt, -lt, -ge, -le
+   - 判断字符串: -z(是否为0), -n(是否不为0, -n可省略), =, !=
+   - 多重条件判定: -a(两个条件同时成立), -o(任何一个条件成立), !(反向状态)
+   *备注*
+     由于root在很多权限限制上面都是无效的，所以使用root执行test查看权限，常常发现与 =ls -l= 观察到的不一样
+** 判断符 []
+   注意事项:
+   - 在中括号内的每个组件都需要有空格键来分隔
+   - 在中括内的变量，最好都以双引号括起来
+   - 在中括号内的常量，最好都以单或双引号括起来
+** if ... then
+   语法:
+   #+BEGIN_SRC sh
+   if [ 条件判断式一 ]; then
+      当条件判断式一成立时，可以进行的命令工作内容
+   elif [ 条件判断式二 ]; then
+      当条件判断式二成立时，可以进行的命令工作内容
+   else
+      当条件判断式一与二不成立时，可以进行的命令工作内容
+   fi
+   #+END_SRC
+** case ... esac
+   语法:
+   #+BEGIN_SRC sh
+   case $变量名称 in   
+      "第一个变量内容")
+         程序段
+         ;;     <== 每个类型结尾使用两个连续的分号来处理
+      ”第二个变量内容")
+         程序段
+         ;;
+      *)        <== 相当与default
+         代码段
+         ;;
+   esac
+   #+END_SRC
+   
+* function 功能
+  语法:
+  #+BEGIN_SRC sh
+  function fname() {
+      程序段
+  }
+  #+END_SRC
+  注意事项:
+  - function 的设置一定要在调用之前
+  - 函数也拥有内置变量
+  - 函数内的$0, $1和shell script中的$0是不同的
+  示例:
+    #+BEGIN_SRC sh
+    function argprint() {
+    echo "arg1 is $1"
+    }
+
+    case $1 in
+    "a")
+      argprint A
+      ;;
+    "b")
+      argprint 1
+      ;;
+    *)  
+      argprint hh
+      ;;  
+    esac
+    #+END_SRC
+* 循环
+** while do done, until do done
+   语法:
+   #+BEGIN_SRC sh
+   while [ condition ]
+   do 
+      程序段
+   done
+
+   until [ continue ]
+   do
+      程序段
+   done
+   #+END_SRC
+** for ... do ... done
+   语法:
+   #+BEGIN_SRC sh
+   for var in con1 con2 ...
+   do 
+      程序段
+   done
+
+   或者
+   for ((初始值;限制值;执行步长))  #如for ((i = 1; i <= 10; i++))
+   do
+      程序段
+   done
+   #+END_SRC
+* shell script 追踪与调试
+  =sh [-nvx] script.sh=
+  - -n: 不要执行script, 仅查询语法问题
+  - -v: 在执行script之前, 先将script的内容输出到屏幕上
+  - -x: 将使用到的script内容显示到屏幕上

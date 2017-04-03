@@ -93,8 +93,8 @@
    比如我们给出下面三种链接的方式
    #+BEGIN_SRC sh
    1 [[www.baidu.com][百度]]
-   2 [[file:./images/test.png][picture]]                  # 翻译成html为<a href=link>description</a> 
-   3 [[http://www.baidu.com][file:./images/test.png]]   # 在github上被翻译成html为<a href=link><img src=description></a>，在emacs中不能转换成html
+   2 [[file:./images/test.png][picture]]                  
+   3 [[http://www.baidu.com][file:./images/test.png]]   
    #+END_SRC
    实际效果如下
 
