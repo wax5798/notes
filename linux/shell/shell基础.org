@@ -1,14 +1,15 @@
 今天写一个shell脚本，发现居然连脚本怎么带参数都忘了。蹭着空闲，简单整理一下shell的基本用法
+参考至 《鸟哥的Linux私房菜》
 * 写在前面
   发现一些比较杂乱且不太好归类的知识点，就先在前面列一下吧
   - 命令的执行是从上而下、从左而右地分析与执行
   - 如果读取到一个Enter符号，就尝试开始执行该行（或该串）命令
-  - 至于如果一行的内容如果太多，则可以使用“\[Enter]”来扩展至下一行
+  - 至于一行的内容如果太多，则可以使用“\[Enter]”来扩展至下一行
   - "#"可作为批注
   - 可以通过$?来查看一个命令执行成功与否
   - script内较特殊的命令，使用“绝对路径”来执行
   - 数值运算$((计算式))，如 =# echo $((13 % 3))= 
-  - 使用source（或小数点"."）来执行脚本，如 =source ~/.bashrc= ,.bashrc会在父进程中执行，各项操作都会在原本的bash内生效
+  - 使用source（或小数点"."）来执行脚本，如 =source ~/.bashrc= ，.bashrc会在父进程中执行，各项操作都会在原本的bash内生效
 
 
 * shell script 的默认变量
@@ -31,16 +32,17 @@
     echo print '$@'
     for arg in "$@"
     do 
-        echo -e "\t" $arg
+      echo -e "\t" $arg
     done
 
-    echo print '$*'                                                                                                                                                                                              
+    echo print '$*'
     for arg in "$*"
     do 
-        echo -e '\t' $arg
+      echo -e '\t' $arg
     done
     #+END_SRC
-    /??脚本中单引号和双引号有什么区别/
+    /*??脚本中单引号和双引号有什么区别*/
+
     运行结果如下
     #+BEGIN_SRC sh
     # ./test.sh sldfk sdfklj
@@ -51,15 +53,15 @@
     $@: sldfk sdfklj
     $*: sldfk sdfklj
     print $@
-       sldfk
-       sdfklj
+      sldfk
+      sdfklj
     print $*
-       sldfk sdfklj
+      sldfk sdfklj
     #+END_SRC
 
 * 条件判断式
 ** test 命令
-   简单实例 =test -e ~/.vimrc && echo "exist" || echo "Not exist"=
+   简单示例 =test -e ~/.vimrc && echo "exist" || echo "Not exist"= 
    
    常用判断标志：
    - -e 判断文件名是否存在
@@ -69,7 +71,7 @@
    - 比较整数: -eq, -ne, -gt, -lt, -ge, -le
    - 判断字符串: -z(是否为0), -n(是否不为0, -n可省略), =, !=
    - 多重条件判定: -a(两个条件同时成立), -o(任何一个条件成立), !(反向状态)
-   *备注*
+   /*备注*/
      由于root在很多权限限制上面都是无效的，所以使用root执行test查看权限，常常发现与 =ls -l= 观察到的不一样
 ** 判断符 []
    注意事项:
@@ -141,7 +143,7 @@
       程序段
    done
 
-   until [ continue ]
+   until [ condition ]
    do
       程序段
    done
