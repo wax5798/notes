@@ -1,5 +1,5 @@
 * 编程规范
-  - 变量的申明不要与库函数冲突，比如 =cJSON *time = NULL= 中，time和库函数time()冲突
+  - 变量的申明不要与库函数冲突，比如 =cJSON *time = NULL= 中，time和库函数time()冲突, 还有 =index=
   - 函数的指针参数，如果无需被修改，则使用const定义
   - 对所有函数做返回值检查，即使有些函数返回值不影响执行流程，但返回值错误需要打印
   - 参数合法性检查，特别是memcpy/strlen等函数
@@ -8,3 +8,5 @@
   - 尽量少使用这样的形式fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFL, 0) | O_NONBLOCK)，因为不知道里面的fcntl是否执行成功
   - 不要使用while (1)
   - 不要使用 if (tmp = func())来判断返回非零，而应该是if (0 != (tmp = func()))
+  - 不带参数的函数声明，参数列表要使用void
+  - 声明字符串数组，比最大长度 + 1
