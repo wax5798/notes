@@ -126,19 +126,19 @@ Markdown 使用星号（`*`）和底线（`_`）作为标记强调字词的符�
         return 0
     }
     ```
-示例2： 流程图
+示例2： 流程图 (貌似需要额外插件支持)
 
-``` flow
-st=>start: Start
-e=>end: End
-op=>operation: My Operation
-cond=>condition: Yes or No?
+    ``` flow
+    st=>start: Start
+    e=>end: End
+    op=>operation: My Operation
+    cond=>condition: Yes or No?
 
-st->op->cond
-cond(yes)->e
-cond(no)->op
-```
-示例3： 时序图
+    st->op->cond
+    cond(yes)->e
+    cond(no)->op
+    ```
+示例3： 时序图 (貌似需要额外插件支持)
 
     ``` sequence
     Alice->Bob: Hello Bob, how are you?
@@ -148,6 +148,7 @@ cond(no)->op
 
 ## 图片
 Markdown 使用一种和链接很相似的语法来标记图片，同样也允许两种样式： 行内式和参考式
+放括号内为图片的替代文字
 
     ![Alt text](/path/to/img.jpg)
     ![Alt text](/path/to/img.jpg "Optional title")
