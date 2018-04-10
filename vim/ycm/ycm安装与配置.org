@@ -1,0 +1,32 @@
+/usr/bin/ld: failed to set dynamic section sizes: Memory exhausted
+* 环境
+  + ubuntu 14.04 32位
+
+* 编译cmake
+  - 移除老版本的cmake =sudo apt-get remove cmake=
+  - 下载[[https://cmake.org/download/][源码]]到~/tools/ 路径
+  - 解压文件 =tar -xvzf cmake-3.9.0.tar.gz=
+  - 生成Makefile =cd cmake-3.9.0/ && ./configure=
+  - 编译与安装 =make && make install=
+  - 查看版本信息 =cmake --version=
+* 编译安装clang
+  - 移除老版本 =sudo apt-get remove clang-3.6=
+  - 下载[[http://releases.llvm.org/download.html][源码]]到～/tools/llvm
+  - 解压文件
+      + =tar -xvf cfe-4.0.0.src.tar.xz=
+      + =tar -xvf compiler-rt-4.0.0.src.tar.xz=
+      + =tar -xvf llvm-4.0.0.src.tar.xz=
+  - 构建编译目录
+      + =cd llvm-4.0.0.src/=
+      + =mv ../cfe-4.0.0.src tools/clang=
+      + =mv ../compiler-rt-4.0.0.src projects/compiler-rt=
+  - 创建编译目录 =mkdir build && cd buid=
+  - 生成Makefile =cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD="host" ..=
+  - 编译与安装 =make && make install=
+* 编译ycm
+  - 创建并进入目录 ~/ycm_build
+    + cd ~
+    + mkdir ycm_build
+    + cd ycm_build/
+  - 生成Makefile =cmake -G "Unix Makefiles" -DUSE_SYSTEM_LIBCLANG=ON .  ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/=
+  - 生成库 =cmake --build . --target ycm_core --config Release=

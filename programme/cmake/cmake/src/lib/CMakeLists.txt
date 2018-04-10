@@ -1,0 +1,10 @@
+set(SRC_LIST hello.c)
+# set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/output/lib)
+# add_library(libhello ${SRC_LIST})
+add_definitions(-DLIBHELLO_BUILD)
+add_library(hello_shared SHARED ${SRC_LIST})
+set_target_properties(hello_shared PROPERTIES OUTPUT_NAME "hello")
+set_target_properties(hello_shared PROPERTIES VERSION 1.2 SOVERSION 1)
+
+add_library(hello_static STATIC ${SRC_LIST})
+set_target_properties(hello_static PROPERTIES OUTPUT_NAME "hello")
