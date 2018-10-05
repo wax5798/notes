@@ -1,0 +1,219 @@
+<head><meta charset="UTF-8"></head>
+<style>
+h1 {
+    text-align: center;
+    border-left: 5px solid #e86422;
+    border-right: 5px solid #e86422;
+}
+h2 {
+    border-left: 5px solid #ff7f00;
+    border-right: 5px solid #ff7f00;
+    padding-left: 10px;
+}
+h3 {
+    border-left: 5px solid #e86422;
+    padding-left: 8px;
+}
+h4 {
+    border-left: 3px solid #f0a000;
+    padding-left: 5px;
+}
+</style>
+
+今天写一个shell脚本，发现居然连脚本怎么带参数都忘了。蹭着空闲，简单整理一下shell的基本用法
+参考至 《鸟哥的Linux私房菜》
+## 写在前面
+发现一些比较杂乱且不太好归类的知识点，就先在前面列一下吧
+- 命令的执行是从上而下、从左而右地分析与执行
+- 如果读取到一个Enter符号，就尝试开始执行该行（或该串）命令
+- 至于一行的内容如果太多，则可以使用`\<Enter>`来扩展至下一行
+- "#"可作为批注
+- 可以通过$?来查看上一个命令执行成功与否
+- script内较特殊的命令，使用“绝对路径”来执行
+- 数值运算`$((计算式))`，如 `$ echo $((13 % 3))`
+- 使用source（或小数点"."）来执行脚本，如 `source ~/.bashrc` ，.bashrc会在父进程中执行，各项操作都会在原本的bash内生效
+- 减号 - 可以代替stdout和stdin
+- xargs [-0epn] command
+
+## 变量
+#### 变量的取用与设定
+变量取用时要加`$`符号，如`$PATH` 或`${PATH}`
+
+变量设定规则:
+- 变量与变量内容以一个等号 = 来连接
+- 等号两边不能直接接空格符
+- 变量名称只能是英文字母与数字，但开头字符不能是数字
+- 变量内容若有空格可使用双引号或单引号将变量内容结合起来，但：
+    + 双引号内的特殊字符如$等，可以保有原本的特性
+    + 单引号内的特殊字符则仅为一般字符（纯文本）
+- 可用跳脱字符 \ 将特殊符号（如`<enter>, $, \, 空格符, '`等）变成一般字符
+- 可以使用反单引号`` `指令` ``或 $(指令) 的形式把 指令 的输出提供给其它指令
+- 若变量需要在其他子程序中有效，则需要export来使变量变成环境变量
+- 取消变量可以使用unset， `unset 变量名` 
+#### shell script 的默认变量
+- `$数字`: 代表第 **数字** 个变量
+- `$#`: 代表后接的参数个数（不包括 $0）
+- `$@`: 代表"`$1`"、"`$2`"、"`$3`"之意，每个变量是独立的（用双引号扩起来）
+- `$*`: 代表"`$1c$2c$3`"，其中c为分隔字符，默认为空格键。
+
+示例代码如下
+```
+#!/bin/bash
+
+echo '$0:' $0
+echo '$1:' $1
+echo '$2:' $2
+echo '$#:' $#
+echo '$@:' $@
+echo '$*:' $*
+
+echo print '$@'
+for arg in "$@"
+do 
+    echo -e "\t" $arg
+done
+
+echo print '$*'
+for arg in "$*"
+do 
+    echo -e '\t' $arg
+done
+```
+
+运行结果如下
+```
+# ./shell.sh asd qwe
+$0: ./shell.sh
+$1: asd
+$2: qwe
+$#: 2
+$@: asd qwe
+$*: asd qwe
+print $@
+	 asd
+	 qwe
+print $*
+	 asd qwe
+```
+
+## 条件判断式
+#### test 命令
+简单示例 `test -e ~/.vimrc && echo "exist" || echo "Not exist"` 
+
+常用判断标志：
+- -e 判断文件名是否存在
+- 判断文件类型: -f(file), -d(directory), -b(block device), -c(character device), -S(socket), -p(pipe), -L(link)
+- 权限检测: -r(可读), -w(可写), -x(可执行), -u(SUID), -g(GUID), -k(Sticky bit), -s(非空白文件)
+- 比较两文件: -nt(newer than), -ot(older than), -ef(指向同一个inode)
+- 比较整数: -eq, -ne, -gt, -lt, -ge, -le
+- 判断字符串: -z(是否为0), -n(是否不为0, -n可省略), =, !=
+- 多重条件判定: -a(两个条件同时成立), -o(任何一个条件成立), !(反向状态)
+
+**备注**
+由于root在很多权限限制上面都是无效的，所以使用root执行test查看权限，常常发现与 `ls -l 观察到的不一样
+
+#### 判断符 []
+注意事项:
+- 在中括号内的每个组件都需要有空格键来分隔
+- 在中括内的变量，最好都以双引号括起来
+- 在中括号内的常量，最好都以单或双引号括起来
+
+#### if ... then
+语法:
+````
+if [ 条件判断式一 ]; then
+    当条件判断式一成立时，可以进行的命令工作内容
+elif [ 条件判断式二 ]; then
+    当条件判断式二成立时，可以进行的命令工作内容
+else
+    当条件判断式一与二不成立时，可以进行的命令工作内容
+fi
+```
+
+#### case ... esac
+语法:
+```
+case $变量名称 in   
+    "第一个变量内容")
+        程序段
+        ;;     <== 每个类型结尾使用两个连续的分号来处理
+    "第二个变量内容")
+        程序段
+        ;;
+    *)        <== 相当于default
+        代码段
+        ;;
+esac
+```
+
+## 循环
+#### while do done, until do done
+语法:
+```
+while [ condition ]
+do 
+    程序段
+done
+
+until [ condition ]
+do
+    程序段
+done
+```
+
+#### for ... do ... done
+语法:
+```
+for var in con1 con2 ...
+do 
+    程序段
+done
+
+或者
+for ((初始值;限制值;执行步长))  #如for ((i = 1; i <= 10; i++))
+do
+    程序段
+done
+```
+
+## function 功能
+语法:
+```
+function fname() {
+    程序段
+}
+```
+
+注意事项:
+- function 的设置一定要在调用之前
+- 函数也拥有内置变量
+- 函数内的$0, $1和shell script中的$0是不同的
+- 函数可以通过return返回一个数字，用来表示处理结果
+示例:
+```
+function argprint() {
+    echo "arg1 is $1"
+    return 3
+}
+
+case $1 in
+    "a")
+        argprint A
+        echo return $?
+        ;;
+    "b")
+        argprint 1
+        echo return $?
+        ;;
+    *)  
+        argprint hh
+        echo return $?
+        ;;  
+esac
+```
+
+## shell script 追踪与调试
+`sh [-nvx] script.sh`
+- -n: 不要执行script, 仅查询语法问题
+- -v: 在执行script之前, 先将script的内容输出到屏幕上
+- -x: 将使用到的script内容显示到屏幕上

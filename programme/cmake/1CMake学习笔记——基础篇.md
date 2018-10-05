@@ -3,7 +3,8 @@
 主要包括了包含头文件路径、生成库、生成二进制文件等功能。不包括安装、测试等功能
 
 # 一些语法规则
-- 变量使用${ }方式取值
+- 变量使用 ${ } 方式取值
+- 系统环境变量使用 $ENV{ } 方式取值
 - command(arg1 arg2 ...) 指令参数使用括弧括起来，参数之间使用空格或分号分开
 - 指令大小写无关，参数和变量是大小写相关的
 
@@ -123,8 +124,10 @@ target_link_libraries(hello ${LIB_LIST})
 > CMake会自动处理依赖关系，所以source中不需要列出头文件
 > PS: CMake是根据同名来查询头文件的？如果这样，非同名头文件是否应该被添加到source？
 
-*TARGET_LINK_LIBRARIES(dir1 dir2 ...)*
-> 添加非标准的共享库搜索路径
+*TARGET_LINK_LIBRARIES(target library...)*
+> 给target指定一个或多个链接库。
+> 如果target是一个可执行目标，则它会与这些库链接
+> 如果target是一个库，则它与其他库的依赖关系会被记录下来。当其他目标需要链接到这个target时，以来关系会被解析
 
 ### ./include/hello.h
 
